@@ -588,7 +588,20 @@ class Blockchain(BlockchainInterface):
             self.constants, len(unfinished_header_block.finished_sub_slots) > 0, prev_b, self
         )
         log.error(f"Rook validate unfinished block call")
-        try:
+        required_iters, difficulty_coeff, error = validate_unfinished_header_block(
+            self.constants,
+            self,
+            unfinished_header_block,
+            False,
+            difficulty,
+            sub_slot_iters,
+            self.coin_store,
+            skip_overflow_ss_validation,
+        )
+        if error is not None:
+            log.error(f"Rook reported Exception")
+            prior = self.get_peak() - 1
+            log.error(f"Deploying retries - peak minus one {prior}")
             required_iters, difficulty_coeff, error = validate_unfinished_header_block(
                 self.constants,
                 self,
@@ -598,14 +611,24 @@ class Blockchain(BlockchainInterface):
                 sub_slot_iters,
                 self.coin_store,
                 skip_overflow_ss_validation,
+                height = prior
             )
-        except Exception as cError:
-            log.error(f"Rook caught exception")
-            raise(cError)
-        if error is not None:
-            log.error(f"Rook reported Exception")
+            if error is not None:
+                log.error("Still got an error with prior height, trying minus two")
+                required_iters, difficulty_coeff, error = validate_unfinished_header_block(
+                    self.constants,
+                    self,
+                    unfinished_header_block,
+                    False,
+                    difficulty,
+                    sub_slot_iters,
+                    self.coin_store,
+                    skip_overflow_ss_validation,
+                    height = (prior - 1)
+                )
 
         if error is not None:
+            log.error("Rook Failed all retries")
             return PreValidationResult(uint16(error.code.value), None, None, None)
 
         prev_height = (
