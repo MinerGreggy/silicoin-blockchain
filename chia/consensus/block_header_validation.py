@@ -99,6 +99,11 @@ def validate_unfinished_header_block(
         else:
             can_finish_se = False
             can_finish_epoch = False
+    
+    # Try moving height to match for retries
+    if inHeight is not None and inHeight != height:
+        if inHeight > 0:
+            height = inHeight
 
     # 2. Check finished slots that have been crossed since prev_b
     ses_hash: Optional[bytes32] = None
