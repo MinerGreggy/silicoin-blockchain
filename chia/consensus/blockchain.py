@@ -587,7 +587,7 @@ class Blockchain(BlockchainInterface):
         sub_slot_iters, difficulty = get_next_sub_slot_iters_and_difficulty(
             self.constants, len(unfinished_header_block.finished_sub_slots) > 0, prev_b, self
         )
-        log.error(f"Rook validate unfinished block call at height {self._peak_height")
+        log.error(f"Rook validate unfinished block call at height {self._peak_height}")
         required_iters, difficulty_coeff, error = validate_unfinished_header_block(
             self.constants,
             self,
