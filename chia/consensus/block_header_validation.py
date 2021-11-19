@@ -872,6 +872,7 @@ def validate_finished_header_block(
         header_block.transactions_filter,
     )
 
+    log.error("Rook validate finished header block call")
     required_iters, difficulty_coeff, validate_unfinished_err = validate_unfinished_header_block(
         constants,
         blocks,

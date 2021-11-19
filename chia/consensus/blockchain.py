@@ -587,16 +587,21 @@ class Blockchain(BlockchainInterface):
         sub_slot_iters, difficulty = get_next_sub_slot_iters_and_difficulty(
             self.constants, len(unfinished_header_block.finished_sub_slots) > 0, prev_b, self
         )
-        required_iters, difficulty_coeff, error = validate_unfinished_header_block(
-            self.constants,
-            self,
-            unfinished_header_block,
-            False,
-            difficulty,
-            sub_slot_iters,
-            self.coin_store,
-            skip_overflow_ss_validation,
-        )
+        log.error(f"Rook validate unfinished block call")
+        try:
+            required_iters, difficulty_coeff, error = validate_unfinished_header_block(
+                self.constants,
+                self,
+                unfinished_header_block,
+                False,
+                difficulty,
+                sub_slot_iters,
+                self.coin_store,
+                skip_overflow_ss_validation,
+            )
+        except chia.util.errors.ConsensusError as cError:
+            log.error(f"Rook caught exception")
+            raise(cError)
 
         if error is not None:
             return PreValidationResult(uint16(error.code.value), None, None, None)
