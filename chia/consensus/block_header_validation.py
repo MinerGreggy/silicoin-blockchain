@@ -581,6 +581,7 @@ def validate_unfinished_header_block(
     total_iters = uint128(total_iters + ip_iters)
     if total_iters != header_block.reward_chain_block.total_iters:
         log.error(f"Rook: INVALID_TOTAL_ITERS in validate unfinished: total iters {total_iters} header iters {header_block.reward_chain_block.total_iters} expected_difficulty {expected_difficulty} difficulty_coeff {difficulty_coeff}")
+        log.error(f"height {height} inHeight {inHeight}")
         return (
             None,
             None,

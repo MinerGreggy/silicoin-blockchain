@@ -599,9 +599,11 @@ class Blockchain(BlockchainInterface):
                 self.coin_store,
                 skip_overflow_ss_validation,
             )
-        except chia.util.errors.ConsensusError as cError:
+        except Exception as cError:
             log.error(f"Rook caught exception")
             raise(cError)
+        if error is not None:
+            log.error(f"Rook reported Exception")
 
         if error is not None:
             return PreValidationResult(uint16(error.code.value), None, None, None)
