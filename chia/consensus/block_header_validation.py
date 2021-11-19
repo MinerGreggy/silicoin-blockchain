@@ -60,7 +60,7 @@ def validate_unfinished_header_block(
     and lead to other small tweaks in validation.
     """
     # 1. Check that the previous block exists in the blockchain, or that it is correct
-
+    inHeight = height
     prev_b = blocks.try_block_record(header_block.prev_header_hash)
     genesis_block = prev_b is None
     if genesis_block and header_block.prev_header_hash != constants.GENESIS_CHALLENGE:
@@ -503,12 +503,15 @@ def validate_unfinished_header_block(
         return None, None, ValidationError(Err.INVALID_SP_INDEX)
 
     # Note that required iters might be from the previous slot (if we are in an overflow block)
-    peak_height = None
-    if height is not None:
-        if height > 0:
-            peak_height = height - 1
+    if inHeight is not None and inHeight != height:
+        log.info(f"Rook inHeight: {inHeight} height: {height}")
+        if inHeight > 0:
+            peak_height = inHeight - 1
         else:
             peak_height = 0
+    else:
+        peak_height = height - 1
+       
     difficulty_coeff = blocks.get_farmer_difficulty_coeff_sync(
         header_block.reward_chain_block.proof_of_space.farmer_public_key, peak_height
     )

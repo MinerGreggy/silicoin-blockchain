@@ -27,6 +27,7 @@ class HarvesterAPI:
 
     def __init__(self, harvester: Harvester):
         self.harvester = harvester
+        self.currentDiff = 20
 
     def _set_state_changed_callback(self, callback: Callable):
         self.harvester.state_changed_callback = callback
@@ -119,6 +120,11 @@ class HarvesterAPI:
                         )
                         sp_interval_iters = calculate_sp_interval_iters(self.harvester.constants, sub_slot_iters)
                         if required_iters < sp_interval_iters:
+                            self.harvester.log.error(
+                                    f"Rook Proof Found File: {filename} Plot ID: {plot_id.hex()}, challenge: {sp_challenge_hash}, "
+                                    f"plot_info: {plot_info}"
+                                )
+                            self.harvester.log.error(f"Rook required_iters {required_iters} sp_interval_iters {sp_interval_iters}")
                             # Found a very good proof of space! will fetch the whole proof from disk,
                             # then send to farmer
                             try:
@@ -176,6 +182,8 @@ class HarvesterAPI:
             else:
                 difficulty_coeff = Decimal(1)
 
+            self.currentDiff = difficulty_coeff
+            
             proofs_of_space_and_q: List[Tuple[bytes32, ProofOfSpace]] = await loop.run_in_executor(
                 self.harvester.executor, blocking_lookup, filename, plot_info, difficulty_coeff
             )
@@ -246,7 +254,7 @@ class HarvesterAPI:
         self.harvester.log.info(
             f"{len(awaitables)} plots were eligible for farming {new_challenge.challenge_hash.hex()[:10]}..."
             f" Found {total_proofs_found} proofs. Time: {time.time() - start:.5f} s. "
-            f"Total {self.harvester.plot_manager.plot_count()} plots"
+            f"Total {self.harvester.plot_manager.plot_count()} plots at {self.currentDiff}"
         )
 
     @api_request
