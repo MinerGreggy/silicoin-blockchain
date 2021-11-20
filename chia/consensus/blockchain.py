@@ -986,7 +986,9 @@ class Blockchain(BlockchainInterface):
             header_hash = self.height_to_hash(peak_height)
             peak = await self.block_store.get_block_record(header_hash)
 
+        blocksProvided = True
         if blocks is None:
+            blocksProvided = False
             curr: Optional[BlockRecord] = peak
             begin_height = max((curr.height if curr is not None else 0) - block_range, 1)
             blocks = 0
@@ -1016,11 +1018,16 @@ class Blockchain(BlockchainInterface):
                 else:
                     coeff = Decimal("0.05") + Decimal(1) / (Decimal(staking) / space + Decimal("0.05"))
 
-        # log.info(
-        #     f"minimal_staking : {minimal_staking}, space : {space} "
-        #     f"Difficulty coefficient: {coeff}, staking: {staking}, total space: {network_space}, "
-        #     f"blocks: {blocks}, peak_height: {peak_height}"
-        # )
+        log.info(
+            f"farmer public key: {farmer_public_key}, "
+            f"minimal_staking : {minimal_staking}, space : {space} "
+            f"Difficulty coefficient: {coeff}, staking: {staking}, total space: {network_space}, "
+            f"blocks: {blocks}, peak_height: {peak_height}"
+        )
+        if blocksProvided:
+            log.info(f"Rook blocks were provided")
+        else:
+            log.info(f"Rook blocks were calculated from begin_height: {begin_height}")
 
         return coeff
 
