@@ -601,7 +601,7 @@ class Blockchain(BlockchainInterface):
         if error is not None:
             log.error(f"Rook reported Exception")
             prior = self._peak_height
-            log.error(f"Deploying retries - At current peak {prior}")
+            log.error(f"Rook Deploying retries - At current peak {prior}")
             required_iters, difficulty_coeff, error = validate_unfinished_header_block(
                 self.constants,
                 self,
@@ -614,7 +614,7 @@ class Blockchain(BlockchainInterface):
                 height = prior
             )
             if error is not None:
-                log.error("Still got an error with prior height, trying minus One")
+                log.error("Rook Still got an error with prior height, trying minus One")
                 required_iters, difficulty_coeff, error = validate_unfinished_header_block(
                     self.constants,
                     self,
@@ -626,6 +626,45 @@ class Blockchain(BlockchainInterface):
                     skip_overflow_ss_validation,
                     height = (prior - 1)
                 )
+                if error is not None:
+                    log.error("Rook Still got an error with prior height, trying minus Two")
+                    required_iters, difficulty_coeff, error = validate_unfinished_header_block(
+                        self.constants,
+                        self,
+                        unfinished_header_block,
+                        False,
+                        difficulty,
+                        sub_slot_iters,
+                        self.coin_store,
+                        skip_overflow_ss_validation,
+                        height = (prior - 2)
+                    )
+                    if error is not None:
+                        log.error("Rook Still got an error with prior height, trying minus Three")
+                        required_iters, difficulty_coeff, error = validate_unfinished_header_block(
+                            self.constants,
+                            self,
+                            unfinished_header_block,
+                            False,
+                            difficulty,
+                            sub_slot_iters,
+                            self.coin_store,
+                            skip_overflow_ss_validation,
+                            height = (prior - 3)
+                        )
+                        if error is not None:
+                            log.error("Rook Still got an error with prior height, trying minus Four")
+                            required_iters, difficulty_coeff, error = validate_unfinished_header_block(
+                                self.constants,
+                                self,
+                                unfinished_header_block,
+                                False,
+                                difficulty,
+                                sub_slot_iters,
+                                self.coin_store,
+                                skip_overflow_ss_validation,
+                                height = (prior - 4)
+                            )
 
         if error is not None:
             log.error("Rook Failed all retries")

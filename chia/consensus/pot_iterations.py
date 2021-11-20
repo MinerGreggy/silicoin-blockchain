@@ -5,7 +5,9 @@ from chia.consensus.pos_quality import _expected_plot_size
 from chia.types.blockchain_format.sized_bytes import bytes32
 from chia.util.hash import std_hash
 from chia.util.ints import uint8, uint64, uint128
+import logging
 
+log = logging.getLogger(__name__)
 
 def is_overflow_block(constants: ConsensusConstants, signage_point_index: uint8) -> bool:
     if signage_point_index >= constants.NUM_SPS_SUB_SLOT:
@@ -59,6 +61,7 @@ def calculate_iterations_quality(
     """
     sp_quality_string: bytes32 = std_hash(quality_string + cc_sp_output_hash)
 
+    log.error(f"Rook its {difficulty_constant_factor} {quality_string} {size} {difficulty} {difficulty_coeff} {cc_sp_output_hash}")
     iters = uint64(
         int(difficulty * difficulty_coeff)
         * int(difficulty_constant_factor)

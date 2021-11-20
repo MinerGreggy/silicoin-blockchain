@@ -521,6 +521,7 @@ def validate_unfinished_header_block(
         header_block.reward_chain_block.proof_of_space.farmer_public_key, peak_height
     )
     log.info(f"[debug] validate block {difficulty_coeff}")
+    log.info(f"Rook: expected_difficulty {expected_difficulty}")
     required_iters: uint64 = calculate_iterations_quality(
         constants.DIFFICULTY_CONSTANT_FACTOR,
         q_str,
@@ -878,7 +879,6 @@ def validate_finished_header_block(
         header_block.transactions_filter,
     )
 
-    log.error("Rook validate finished header block call")
     required_iters, difficulty_coeff, validate_unfinished_err = validate_unfinished_header_block(
         constants,
         blocks,
