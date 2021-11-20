@@ -598,76 +598,8 @@ class Blockchain(BlockchainInterface):
             self.coin_store,
             skip_overflow_ss_validation,
         )
-        if error is not None:
-            log.error(f"Rook reported Exception")
-            prior = self._peak_height
-            log.error(f"Rook Deploying retries - At current peak {prior}")
-            required_iters, difficulty_coeff, error = validate_unfinished_header_block(
-                self.constants,
-                self,
-                unfinished_header_block,
-                False,
-                difficulty,
-                sub_slot_iters,
-                self.coin_store,
-                skip_overflow_ss_validation,
-                height = prior
-            )
-            if error is not None:
-                log.error("Rook Still got an error with prior height, trying minus One")
-                required_iters, difficulty_coeff, error = validate_unfinished_header_block(
-                    self.constants,
-                    self,
-                    unfinished_header_block,
-                    False,
-                    difficulty,
-                    sub_slot_iters,
-                    self.coin_store,
-                    skip_overflow_ss_validation,
-                    height = (prior - 1)
-                )
-                if error is not None:
-                    log.error("Rook Still got an error with prior height, trying minus Two")
-                    required_iters, difficulty_coeff, error = validate_unfinished_header_block(
-                        self.constants,
-                        self,
-                        unfinished_header_block,
-                        False,
-                        difficulty,
-                        sub_slot_iters,
-                        self.coin_store,
-                        skip_overflow_ss_validation,
-                        height = (prior - 2)
-                    )
-                    if error is not None:
-                        log.error("Rook Still got an error with prior height, trying minus Three")
-                        required_iters, difficulty_coeff, error = validate_unfinished_header_block(
-                            self.constants,
-                            self,
-                            unfinished_header_block,
-                            False,
-                            difficulty,
-                            sub_slot_iters,
-                            self.coin_store,
-                            skip_overflow_ss_validation,
-                            height = (prior - 3)
-                        )
-                        if error is not None:
-                            log.error("Rook Still got an error with prior height, trying minus Four")
-                            required_iters, difficulty_coeff, error = validate_unfinished_header_block(
-                                self.constants,
-                                self,
-                                unfinished_header_block,
-                                False,
-                                difficulty,
-                                sub_slot_iters,
-                                self.coin_store,
-                                skip_overflow_ss_validation,
-                                height = (prior - 4)
-                            )
 
         if error is not None:
-            log.error("Rook Failed all retries")
             return PreValidationResult(uint16(error.code.value), None, None, None)
 
         prev_height = (
@@ -1085,11 +1017,11 @@ class Blockchain(BlockchainInterface):
                 else:
                     coeff = Decimal("0.05") + Decimal(1) / (Decimal(staking) / space + Decimal("0.05"))
 
-        # log.info(
-        #     f"minimal_staking : {minimal_staking}, space : {space} "
-        #     f"Difficulty coefficient: {coeff}, staking: {staking}, total space: {network_space}, "
-        #     f"blocks: {blocks}, peak_height: {peak_height}"
-        # )
+        log.info(
+            f"minimal_staking : {minimal_staking}, space : {space} "
+            f"Difficulty coefficient: {coeff}, staking: {staking}, total space: {network_space}, "
+            f"blocks: {blocks}, peak_height: {peak_height}"
+        )
 
         return coeff
 
