@@ -1430,6 +1430,7 @@ class FullNode:
         peak: Optional[BlockRecord] = self.blockchain.get_peak()
         if peak is not None:
             if block.total_iters < peak.sp_total_iters(self.constants):
+                self.log.error(f"Rook block.total_iters: {block.total_iters} peak.sp_total_iters {peak.sp_total_iters}")
                 # This means this unfinished block is pretty far behind, it will not add weight to our chain
                 return None
 

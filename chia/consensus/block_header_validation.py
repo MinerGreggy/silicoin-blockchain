@@ -580,6 +580,7 @@ def validate_unfinished_header_block(
             total_iters = uint128(prev_b.total_iters - prev_b.ip_iters(constants))
     total_iters = uint128(total_iters + ip_iters)
     if total_iters != header_block.reward_chain_block.total_iters:
+        log.error(f"Rook total_iters {total_iters} header_block.reward_chain_block.total_iters {header_block.reward_chain_block.total_iters}")
         return (
             None,
             None,
