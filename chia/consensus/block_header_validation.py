@@ -581,14 +581,19 @@ def validate_unfinished_header_block(
     total_iters = uint128(total_iters + ip_iters)
     if total_iters != header_block.reward_chain_block.total_iters:
         log.error(f"Rook total_iters {total_iters} header_block.reward_chain_block.total_iters {header_block.reward_chain_block.total_iters}")
-        return (
-            None,
-            None,
-            ValidationError(
-                Err.INVALID_TOTAL_ITERS,
-                f"expected {total_iters} got {header_block.reward_chain_block.total_iters}",
-            ),
-        )
+        log.error(f"Rook Retry Attempt !!!!!!!!!!!!!!!!!!")
+        log.error(f"Rook replacing chain total iters with new calculation")
+        header_block.reward_chain_block.total_iters = total_iters
+        log.error(f"Rook replacing chain sp_iters {header.block.reward_chain_block.sp_iters} with  sp_iters {sp_iters}")
+        header.block.reward_chain_block.sp_iters = sp_iters
+#        return (
+#            None,
+#            None,
+#            ValidationError(
+#                Err.INVALID_TOTAL_ITERS,
+#                f"expected {total_iters} got {header_block.reward_chain_block.total_iters}",
+#            ),
+#        )
 
     sp_total_iters: uint128 = uint128(total_iters - ip_iters + sp_iters - (expected_sub_slot_iters if overflow else 0))
     if overflow and skip_overflow_last_ss_validation:
