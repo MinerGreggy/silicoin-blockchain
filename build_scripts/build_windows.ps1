@@ -11,6 +11,7 @@ rm .\chia-blockchain-gui\release-builds -Recurse -erroraction 'silentlycontinue'
 rm .\chia-blockchain-gui\SIT-win32-x64 -Recurse -erroraction 'silentlycontinue'
 Write-Output "Cleared all"
 
+
 $ErrorActionPreference = "Stop"
 
 mkdir build_scripts\win_build
