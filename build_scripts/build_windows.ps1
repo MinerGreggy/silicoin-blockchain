@@ -133,7 +133,7 @@ Write-Output "   ---"
 
 Write-Output "   ---"
 Write-Output "electron-packager"
-electron-packager . SIT --asar.unpack="{**\daemon\**,**\node_modules\node-pty\build\Release\*}" --overwrite --icon=.\src\assets\img\chia.ico --app-version=$packageVersion --platform=win32 --arch=x64
+electron-packager . Silicoin --asar.unpack="{**\daemon\**,**\node_modules\node-pty\build\Release\*}" --overwrite --icon=.\src\assets\img\chia.ico --app-version=$packageVersion --platform=win32 --arch=x64
 Write-Output "   ---"
 
 Write-Output "   ---"
