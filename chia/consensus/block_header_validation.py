@@ -504,6 +504,7 @@ def validate_unfinished_header_block(
 
     # Note that required iters might be from the previous slot (if we are in an overflow block)
     if inHeight is not None and inHeight != height:
+        log.info(f"Rook inHeight: {inHeight} height: {height}")
         if inHeight > 0:
             peak_height = inHeight - 1
         else:
